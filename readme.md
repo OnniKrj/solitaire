@@ -1,0 +1,1 @@
+Tutorialin linkki: https://flet.dev/docs/tutorials/python-solitaire/
