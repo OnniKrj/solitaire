@@ -1,103 +1,38 @@
+SOLITAIRE_WIDTH = 1000
+SOLITAIRE_HEIGHT = 500
+
 import flet as ft
 from slot import Slot
 from card import Card
 
-'''
-Card dragging with GestureDetector's on_pan_update
-'''
-
-class Solitaire:
+class Solitaire(ft.Stack):
     def __init__(self):
-        self.start_top = 0
-        self.start_left = 0
-
-def main(page: ft.Page):
-
-    def move_on_top(card, controls):
-        '''Draggable card moves to the top of the stack'''
-        controls.remove(card)
-        controls.append(card)
-        page.update()
-
-    def bounce_back(game, card):
-        '''return card to it's starting position'''
-        card.top = game.start_top
-        card.left = game.start_left
-        page.update()
-
-    def start_drag(e: ft.DragStartEvent):
-        move_on_top(e.control, controls)
-        solitaire.start_top = e.control.top
-        solitaire.start_left = e.control.left
-        e.control.update()
-
-    def drop(e: ft.DragEndEvent):
-        for slot in slots:
-            if (
-                abs(e.control.top - slot.top) < 20
-                and abs(e.control.left - slot.left) < 20
-            ):
-                place(e.control, slot)
-                e.control.update()
-                return
-        bounce_back(solitaire, e.control)
-        e.control.update()
-    
-    def place(card, slot):
-        '''place card to the slot'''
-        card.top = slot.top
-        card.left = slot.left
-        page.update()
-
-    def drag(e: ft.DragUpdateEvent):
-        e.control.top = max(0, e.control.top + e.delta_y)
-        e.control.left = max(0, e.control.left + e.delta_x)
-        e.control.update()
-
-    card1 = ft.GestureDetector(
-        mouse_cursor=ft.MouseCursor.MOVE,
-        drag_interval=5,
-        on_pan_start=start_drag,
-        on_pan_update=drag,
-        on_pan_end=drop,
-        left=0,
-        top=0,
-        content=ft.Container(bgcolor=ft.colors.GREEN, width=70, height=100),
-    )
-
-    card2 = ft.GestureDetector(
-        mouse_cursor=ft.MouseCursor.MOVE,
-        drag_interval=5,
-        on_pan_start=start_drag,
-        on_pan_update=drag,
-        on_pan_end=drop,
-        left=100,
-        top=0,
-        content=ft.Container(bgcolor=ft.colors.YELLOW, width=70, height=100),
-    )
-
-    slot0 = ft.Container(
-        width=70, height=100, left=0, top=0, border=ft.border.all(1)
-    )
-
-    slot1 = ft.Container(
-        width=70, height=100, left=200, top=0, border=ft.border.all(1)
-    )
-
-    slot2 = ft.Container(
-        width=70, height=100, left=300, top=0, border=ft.border.all(1)
-    )
-
-    slots = [slot0, slot1, slot2]
-
-    
-    controls = [slot0, slot1, slot2, card1, card2]
-
-    #Deal cards
-    place(card1, slot0)
-    place(card2, slot0)
-    solitaire = Solitaire()
-    page.add(ft.Stack(controls=controls, width=1000, height=500))
-
-ft.app(target=main)
-
+        super().__init__()
+        self.controls = []
+        self.slots = []
+        self.cards = []
+        self.width = SOLITAIRE_WIDTH
+        self.height = SOLITAIRE_HEIGHT
+        
+    def did_mount(self):
+        self.create_card_deck()
+        self.create_slots()
+        self.deal_cards()
+        
+    def create_card_deck(self):
+        card1 = Card(self, color="GREEN")
+        card2 = Card(self, color="YELLOW")
+        self.cards = [card1, card2]
+        
+    def create_slots(self):
+        self.slots.append(Slot(top=0, left=0))
+        self.slots.append(Slot(top=0, left=200))
+        self.slots.append(Slot(top=0, left=300))
+        self.controls.extend(self.slots)
+        self.update()
+        
+    def deal_cards(self):
+        self.controls.extend(self.cards)
+        for card in self.cards:
+            card.place(self.slots[0])
+        self.update()
