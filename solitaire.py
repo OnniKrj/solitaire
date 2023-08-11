@@ -43,7 +43,7 @@ def main(page: ft.Page):
         e.control.left = max(0, e.control.left + e.delta_x)
         e.control.update()
 
-    card = ft.GestureDetector(
+    card1 = ft.GestureDetector(
         mouse_cursor=ft.MouseCursor.MOVE,
         drag_interval=5,
         on_pan_start=start_drag,
@@ -54,13 +54,24 @@ def main(page: ft.Page):
         content=ft.Container(bgcolor=ft.colors.GREEN, width=70, height=100),
     )
 
+    card2 = ft.GestureDetector(
+        mouse_cursor=ft.MouseCursor.MOVE,
+        drag_interval=5,
+        on_pan_start=start_drag,
+        on_pan_update=drag,
+        on_pan_end=drop,
+        left=100,
+        top=0,
+        content=ft.Container(bgcolor=ft.colors.YELLOW, width=70, height=100),
+    )
+
     slot = ft.Container(
         width=70, height=100, left=200, top=0, border=ft.border.all(1)
     )
 
     solitaire = Solitaire()
-
-    page.add(ft.Stack(controls=[slot, card], width=1000, height=500))
+    controls = [slot, card1, card2]
+    page.add(ft.Stack(controls=controls, width=1000, height=500))
 
 ft.app(target=main)
 
