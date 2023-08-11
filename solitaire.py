@@ -1,4 +1,6 @@
 import flet as ft
+from slot import Slot
+from card import Card
 
 '''
 Card dragging with GestureDetector's on_pan_update
