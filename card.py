@@ -20,13 +20,18 @@ class Card(ft.GestureDetector):
         self.suite=suite
         self.rank=rank
         self.face_up=False
-        self.card_offset = CARD_OFFSET
+        #self.card_offset = CARD_OFFSET
         self.content=ft.Container(
             width=CARD_WIDTH,
             height=CARD_HEIGHT,
             border_radius=ft.border_radius.all(6),
             content=ft.Image(src="card_back.png"))
         
+    
+    def turn_face_up(self):
+        self.face_up=True
+        self.content.content.src=f"{self.rank.name}_{self.suite.name}.svg"
+        self.update()
         
     def move_on_top(self):
         for card in self.get_draggable_pile():

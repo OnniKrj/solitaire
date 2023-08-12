@@ -107,6 +107,10 @@ class Solitaire(ft.Stack):
         for card in remaining_cards:
             card.place(self.stock)
         
+        for slot in self.table:
+            slot.get_top_card().turn_face_up()
+            self.update()
+        
         self.update()
         
         #self.controls.extend(self.cards)
