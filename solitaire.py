@@ -2,6 +2,7 @@ SOLITAIRE_WIDTH = 1000
 SOLITAIRE_HEIGHT = 500
 
 import flet as ft
+import random
 from slot import Slot
 from card import Card
 
@@ -19,8 +20,6 @@ class Solitaire(ft.Stack):
     def __init__(self):
         super().__init__()
         self.controls = []
-        self.slots = []
-        self.cards = []
         self.width = SOLITAIRE_WIDTH
         self.height = SOLITAIRE_HEIGHT
         
@@ -77,8 +76,8 @@ class Solitaire(ft.Stack):
         
         self.controls.append(self.stock)
         self.controls.append(self.waste)
-        self.controls.append(self.foundations)
-        self.controls.append(self.table)
+        self.controls.extend(self.foundations)
+        self.controls.extend(self.table)
         self.update()
         
         #self.slots.append(Slot(top=0, left=0))
@@ -88,7 +87,29 @@ class Solitaire(ft.Stack):
         #self.update()
         
     def deal_cards(self):
+        random.shuffle(self.cards)
         self.controls.extend(self.cards)
-        for card in self.cards:
-            card.place(self.slots[0])
+        
+        # Deal to table
+        
+        first_slot = 0
+        remaining_cards = self.cards
+        
+        while first_slot < len(self.table):
+            for slot in self.table[first_slot:]:
+                top_card = remaining_cards[0]
+                top_card.place(slot)
+                remaining_cards.remove(top_card)
+            first_slot += 1
+        
+        # Place remaining cards to stock pile
+        
+        for card in remaining_cards:
+            card.place(self.stock)
+        
         self.update()
+        
+        #self.controls.extend(self.cards)
+        #for card in self.cards:
+        #    card.place(self.slots[0])
+        #self.update()

@@ -9,4 +9,4 @@ def main(page: ft.Page):
     page.add(solitaire)
 
 
-ft.app(target=main, assets_dir="images")
+ft.app(target=main, assets_dir="assets\images")

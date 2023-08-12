@@ -42,16 +42,27 @@ class Card(ft.GestureDetector):
         self.solitaire.update()
         
     def place(self, slot):
+        """Place draggable pile to the slot"""
+
         draggable_pile = self.get_draggable_pile()
+
         for card in draggable_pile:
-            card.top = slot.top + len(slot.pile) * CARD_OFFSET
+            if slot in self.solitaire.table:
+                card.top = slot.top + len(slot.pile) * CARD_OFFSET
+            else:
+                card.top = slot.top
             card.left = slot.left
-            
+
+            # remove card from it's original slot, if exists
             if card.slot is not None:
                 card.slot.pile.remove(card)
-            
+
+            # change card's slot to a new slot
             card.slot = slot
+
+            # add card to the new slot's pile
             slot.pile.append(card)
+
         self.solitaire.update()
         
     def start_drag(self, e: ft.DragStartEvent):
@@ -66,7 +77,7 @@ class Card(ft.GestureDetector):
             card.update() 
         
     def drop(self, e: ft.DragEndEvent):
-        for slot in self.solitaire.slots:
+        for slot in self.solitaire.table:
             if (
                 abs(self.top - (slot.top + len(slot.pile) * CARD_OFFSET)) < DROP_PROXIMITY 
             and abs(self.left - slot.left) < DROP_PROXIMITY
