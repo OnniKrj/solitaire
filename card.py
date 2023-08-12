@@ -1,7 +1,7 @@
 CARD_WIDTH = 70
 CARD_HEIGHT = 100
 CARD_OFFSET = 20
-DROP_PROXIMITY = 20
+DROP_PROXIMITY = 30
 
 import flet as ft
 
@@ -85,6 +85,16 @@ class Card(ft.GestureDetector):
                 self.place(slot)
                 self.update()
                 return
+            
+        for slot in self.solitaire.foundations:
+            if (
+                abs(self.top - slot.top) < DROP_PROXIMITY
+            and abs(self.left - slot.left) < DROP_PROXIMITY
+            ):
+                self.place(slot)
+                self.update()
+                return
+            
         self.bounce_back()
         self.update()
         
