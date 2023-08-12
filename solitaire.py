@@ -5,6 +5,16 @@ import flet as ft
 from slot import Slot
 from card import Card
 
+class Suite:
+    def __init__(self, suite_name, suite_color):
+        self.name = suite_name
+        self.color = suite_color
+        
+class Rank:
+    def __init__(self, card_name, card_value):
+        self.name = card_name
+        self.value = card_value
+
 class Solitaire(ft.Stack):
     def __init__(self):
         super().__init__()

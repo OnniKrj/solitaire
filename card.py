@@ -6,7 +6,7 @@ DROP_PROXIMITY = 20
 import flet as ft
 
 class Card(ft.GestureDetector):
-    def __init__(self, solitaire, color):
+    def __init__(self, solitaire, suite, rank):
         super().__init__()
         self.slot= None
         self.mouse_cursor=ft.MouseCursor.MOVE
@@ -17,9 +17,15 @@ class Card(ft.GestureDetector):
         self.left=None
         self.top=None
         self.solitaire = solitaire
-        self.color = color
+        self.suite=suite
+        self.rank=rank
+        self.face_up=False
         self.card_offset = CARD_OFFSET
-        self.content=ft.Container(bgcolor=self.color, width=CARD_WIDTH, height=CARD_HEIGHT)
+        self.content=ft.Container(
+            width=CARD_WIDTH,
+            height=CARD_HEIGHT,
+            border_radius=ft.border_radius.all(6),
+            content=ft.Image(src="card_back.png"))
         
         
     def move_on_top(self):
