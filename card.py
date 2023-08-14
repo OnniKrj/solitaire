@@ -95,17 +95,18 @@ class Card(ft.GestureDetector):
                     self.solitaire.update()
                     return
                 
-            for slot in self.solitaire.foundations:
-                if (
-                    abs(self.top - slot.top) < DROP_PROXIMITY
-                and abs(self.left - slot.left) < DROP_PROXIMITY
-                ):
-                    self.place(slot)
-                    self.solitaire.update()
-                    return
-                
-            self.bounce_back()
-            self.solitaire.update()
+            if len(self.get_draggable_pile()) == 1:     
+                for slot in self.solitaire.foundations:
+                    if (
+                        abs(self.top - slot.top) < DROP_PROXIMITY
+                    and abs(self.left - slot.left) < DROP_PROXIMITY
+                    ) and self.solitaire.check_foundations_rules(self, slot):
+                        self.place(slot)
+                        self.solitaire.update()
+                        return
+                    
+                self.bounce_back()
+                self.solitaire.update()
         
     def get_draggable_pile(self):
         if self.slot is not None:
