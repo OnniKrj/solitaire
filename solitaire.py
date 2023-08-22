@@ -59,19 +59,19 @@ class Solitaire(ft.Stack):
                 self.cards.append(Card(solitaire=self, suite=suite, rank=rank))
         
     def create_slots(self):
-        self.stock = Slot(top=0, left=0, border=ft.border.all(1))
-        self.waste = Slot(top=0, left=100, border=None)
+        self.stock = Slot(solitaire=self, top=0, left=0, border=ft.border.all(1))
+        self.waste = Slot(solitaire=self, top=0, left=100, border=None)
         
         self.foundations = []
         x = 300
         for i in range(4):
-            self.foundations.append(Slot(top=0, left=x, border=ft.border.all(1, "outline")))
+            self.foundations.append(Slot(solitaire=self, top=0, left=x, border=ft.border.all(1, "outline")))
             x += 100
         
         self.table = []
         x = 0
         for i in range(7):
-            self.table.append(Slot(top=150, left=x, border=None))
+            self.table.append(Slot(solitaire=self, top=150, left=x, border=None))
             x += 100
         
         self.controls.append(self.stock)
@@ -80,11 +80,6 @@ class Solitaire(ft.Stack):
         self.controls.extend(self.table)
         self.update()
         
-        #self.slots.append(Slot(top=0, left=0))
-        #self.slots.append(Slot(top=0, left=200))
-        #self.slots.append(Slot(top=0, left=300))
-        #self.controls.extend(self.slots)
-        #self.update()
         
     def deal_cards(self):
         random.shuffle(self.cards)
@@ -106,10 +101,14 @@ class Solitaire(ft.Stack):
         
         for card in remaining_cards:
             card.place(self.stock)
+            print(f"Card in stock: {card.rank.name} {card.suite.name}")
+        self.update()
         
         for slot in self.table:
             slot.get_top_card().turn_face_up()
-            self.update()
+            
+        self.update()
+            
         
         self.update()
         
@@ -122,3 +121,22 @@ class Solitaire(ft.Stack):
             )
         else:
             return card.rank.name == "Ace"
+        
+    def check_table_rules(self, card, slot):
+        top_card = slot.get_top_card()
+        if top_card is not None:
+            return (
+                card.suite.color != top_card.suite.color
+                and top_card.rank.value - card.rank.value == 1
+                and top_card.face_up
+            )
+        else:
+            return card.rank.name == "King"
+        
+    def restart_stock(self):
+        while len(self.waste.pile) > 0:
+            card = self.waste.get_top_card()
+            card.turn_face_down()
+            card.move_on_top()
+            card.place(self.stock)
+        self.update()

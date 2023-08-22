@@ -35,6 +35,11 @@ class Card(ft.GestureDetector):
         self.content.content.src=f"{self.rank.name}_{self.suite.name}.svg"
         self.solitaire.update()
         
+    def turn_face_down(self):
+        self.face_up = True
+        self.content.content.src = f"card_back.png"
+        self.solitaire.update()
+        
     def move_on_top(self):
         for card in self.get_draggable_pile():
             self.solitaire.controls.remove(card)
@@ -91,7 +96,7 @@ class Card(ft.GestureDetector):
                 if (
                     abs(self.top - (slot.top + len(slot.pile) * CARD_OFFSET)) < DROP_PROXIMITY 
                 and abs(self.left - slot.left) < DROP_PROXIMITY
-                ):
+                ) and self.solitaire.check_table_rules(self, slot):
                     self.place(slot)
                     self.solitaire.update()
                     return
@@ -110,7 +115,7 @@ class Card(ft.GestureDetector):
                 self.solitaire.update()
         
     def get_draggable_pile(self):
-        if self.slot is not None:
+        if self.slot is not None and self.slot != self.solitaire.stock and self.slot != self.solitaire.waste:
             return self.slot.pile[self.slot.pile.index(self):]
         return [self]
     
@@ -118,7 +123,12 @@ class Card(ft.GestureDetector):
         if self.slot in self.solitaire.table:
             if not self.face_up and self == self.slot.get_top_card():
                 self.turn_face_up()
-                self.solitaire.update()
+                self.update()
+        elif self.slot == self.solitaire.stock:
+            self.move_on_top()
+            self.place(self.solitaire.waste)
+            self.turn_face_up()
+            self.solitaire.update()
                 
     def doubleclick(self, e):
         if self.face_up:

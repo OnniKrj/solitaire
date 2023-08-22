@@ -1,1 +1,1 @@
-Tutorialin linkki: https://flet.dev/docs/tutorials/python-solitaire/
+Linkki ohjeeseen: https://flet.dev/docs/tutorials/python-solitaire/
